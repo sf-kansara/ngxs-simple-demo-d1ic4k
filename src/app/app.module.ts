@@ -5,16 +5,21 @@ import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { NgxsFormPluginModule } from '@ngxs/form-plugin';
 import { NgxsResetPluginModule } from 'ngxs-reset-plugin';
 
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DetailComponent } from './detail/detail.component';
 import { ListComponent } from './list/list.component';
-
-import { BoardState } from './core/board.state';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BoardState } from './core/board.state';
 
 @NgModule({
-  declarations: [AppComponent, DetailComponent, ListComponent],
+  declarations: [
+    AppComponent,
+    DetailComponent,
+    ListComponent,
+  ],
   imports: [
+    AppRoutingModule,
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
@@ -22,9 +27,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     NgxsModule.forRoot([BoardState]),
     NgxsReduxDevtoolsPluginModule.forRoot(),
     NgxsFormPluginModule.forRoot(),
-    NgxsResetPluginModule.forRoot()
+    NgxsResetPluginModule.forRoot(),
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }
