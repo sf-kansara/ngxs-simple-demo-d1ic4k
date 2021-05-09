@@ -2,6 +2,7 @@ import { Action, NgxsOnInit, Selector, State, Store } from '@ngxs/store';
 import { AddTask, RemoveTask } from './board.action';
 import { uuid } from '../util';
 import { IBoardState } from './models';
+import { Injectable } from '@angular/core';
 
 const defaults: IBoardState = {
   board: {
@@ -16,6 +17,7 @@ const defaults: IBoardState = {
   ]
 };
 
+@Injectable()
 @State({
   name: 'BoardState',
   defaults: defaults
@@ -24,7 +26,7 @@ export class BoardState implements NgxsOnInit {
   constructor(private store: Store) {}
 
   ngxsOnInit() {
-    console.log(this.store.snapshot());
+    // console.log(this.store.snapshot());
   }
 
   @Selector()
@@ -48,13 +50,13 @@ export class BoardState implements NgxsOnInit {
   }
 
   @Action(RemoveTask)
-  switchStatus({ getState, patchState }, { id }: RemoveTask) {
+  removeTask({ getState, patchState }, { id }: RemoveTask) {
     const state: IBoardState = getState();
     const index = state.tasks.findIndex(task => task.id === id);
     if (index < 0) return;
 
     const tasks = [...state.tasks];
-    tasks.splice(1, index);
+    tasks.splice(index, 1);
     patchState({ tasks });
   }
 }
