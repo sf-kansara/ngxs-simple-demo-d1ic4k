@@ -1,7 +1,16 @@
-<div>
-  <ul>
-    <li *ngFor="let task of tasks">
-      <app-detail [task]="task"></app-detail>
-    </li>
-  </ul>
-</div>
+<section>
+  <table>
+    <tr>
+      <th>Task</th>
+      <th *ngFor="let column of columns">{{ column.name }}</th>
+    </tr>
+    <tr *ngFor="let task of tasks">
+      <td>
+        {{ task.name }}
+      </td>
+      <td *ngFor="let column of columns">
+        {{ task.fieldValues[column.id] }}
+      </td>
+    </tr>
+  </table>
+</section>

@@ -1,0 +1,6 @@
+<div>
+  <div *ngFor="let group of groups">
+    <app-list [tasks]="groupTasks[group.id]" [columns]="groupColumns[group.id]"></app-list>
+    <div style="height: 20px;"></div>
+  </div>
+</div>

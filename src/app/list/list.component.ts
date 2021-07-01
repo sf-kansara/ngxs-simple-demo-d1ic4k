@@ -1,9 +1,6 @@
-import { Component, OnChanges, OnInit } from '@angular/core';
-import { Select, Store } from '@ngxs/store';
-import { Observable, Subject } from 'rxjs';
-import { BoardState } from '../core/board.state';
-import { AddTask, RemoveTask } from '../core/board.action';
-import { Task } from '../core/models';
+import { Component, Input, OnInit } from '@angular/core';
+import { Subject } from 'rxjs';
+import { Task, Column } from '../core';
 
 @Component({
   selector: 'app-list',
@@ -12,35 +9,18 @@ import { Task } from '../core/models';
 })
 export class ListComponent implements OnInit {
 
+  @Input()
   tasks: Task[];
-  addTaskInt: any;
-  removeTaskInt: any;
-
-  @Select(BoardState.tasks)
-  tasks$: Observable<Task[]>;
+  @Input()
+  columns: Column[];
 
   destroy$ = new Subject<void>();
 
-  constructor(
-    private store: Store
-  ) {}
+  constructor() {}
 
-  ngOnInit() {
-    this.tasks$.subscribe(tasks => {
-      console.log('New Tasks');
-      this.tasks = tasks;
-    });
-    this.addTaskInt = setInterval(() => {
-      this.store.dispatch(new AddTask());
-    }, 5000);
-    this.removeTaskInt = setInterval(() => {
-      this.store.dispatch(new RemoveTask(this.tasks[0].id));
-    }, 6000);
-  }
+  ngOnInit() {}
 
   ngOnDestroy() {
     this.destroy$.next();
-    clearInterval(this.addTaskInt);
-    clearInterval(this.removeTaskInt);
   }
 }

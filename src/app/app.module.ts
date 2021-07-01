@@ -7,16 +7,16 @@ import { NgxsResetPluginModule } from 'ngxs-reset-plugin';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { DetailComponent } from './detail/detail.component';
 import { ListComponent } from './list/list.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BoardState } from './core/board.state';
+import { BoardState } from './core/state/board.state';
+import { MainComponent } from './main/main.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    DetailComponent,
     ListComponent,
+    MainComponent,
   ],
   imports: [
     AppRoutingModule,
