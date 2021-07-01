@@ -3,6 +3,7 @@ import { AddColumn, AddTask, RemoveColumn, RemoveTask } from './board.action';
 import { uuid } from '../../util';
 import { Board, Column, Group, IBoardState, Task } from './models';
 import { Injectable } from '@angular/core';
+import { MessageService } from '../message';
 
 const board: Board = {
   id: uuid(),
@@ -58,7 +59,7 @@ const tasks: Task[] = [
     fieldValues: {
       [columns[0].id]: `Task - 1 | ${columns[0].name}`,
       [columns[1].id]: `Task - 1 | ${columns[1].name}`,
-    }
+    },
   },
   {
     id: uuid(),
@@ -68,7 +69,7 @@ const tasks: Task[] = [
     fieldValues: {
       [columns[0].id]: `Task - 2 | ${columns[0].name}`,
       [columns[1].id]: `Task - 2 | ${columns[1].name}`,
-    }
+    },
   },
   {
     id: uuid(),
@@ -78,7 +79,7 @@ const tasks: Task[] = [
     fieldValues: {
       [columns[2].id]: `Task - 3 | ${columns[2].name}`,
       [columns[3].id]: `Task - 3 | ${columns[3].name}`,
-    }
+    },
   },
   {
     id: uuid(),
@@ -88,7 +89,7 @@ const tasks: Task[] = [
     fieldValues: {
       [columns[2].id]: `Task - 4 | ${columns[2].name}`,
       [columns[3].id]: `Task - 4 | ${columns[3].name}`,
-    }
+    },
   },
 ];
 
@@ -107,7 +108,10 @@ const defaults: IBoardState = {
   defaults: defaults,
 })
 export class BoardState implements NgxsOnInit {
-  constructor(private store: Store) {}
+  constructor(
+    private store: Store,
+    private readonly msgService: MessageService
+  ) {}
 
   ngxsOnInit() {}
 
@@ -146,6 +150,10 @@ export class BoardState implements NgxsOnInit {
       tasks: sTasks,
       taskCounter: state.taskCounter + 1,
     });
+    this.msgService.sendMessage({
+      type: 'TaskAdded',
+      data: { task },
+    });
   }
 
   @Action(RemoveTask)
@@ -169,7 +177,7 @@ export class BoardState implements NgxsOnInit {
     const sGroup = state.groups.find((g) => g.id === sCols[index].groupId);
     const sTasks = [...state.tasks];
     for (const t of sTasks) {
-      if(sTasks[index].groupId === sGroup.id) {
+      if (sTasks[index].groupId === sGroup.id) {
         delete t.fieldValues[sCols[index].id];
       }
     }
@@ -201,6 +209,11 @@ export class BoardState implements NgxsOnInit {
       colCounter: state.colCounter + 1,
       columns: sCols,
       tasks: sTasks,
+    });
+
+    this.msgService.sendMessage({
+      type: 'ColumnAdded',
+      data: { column },
     });
   }
 }

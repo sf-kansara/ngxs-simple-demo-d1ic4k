@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { combineLatest, Observable, Subject } from 'rxjs';
-import { takeWhile } from 'rxjs/operators';
+import { take, takeWhile } from 'rxjs/operators';
 import {
   AddColumn,
   BoardState,
@@ -10,7 +10,12 @@ import {
   AddTask,
   RemoveTask,
   Task,
+  MessageService,
+  TaskAddData,
+  ColumnAddData,
 } from '../core';
+import { Column_AddData, Task_AddData } from '../models';
+import { SharedMessageService } from '../services';
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
@@ -39,11 +44,16 @@ export class MainComponent implements OnInit {
   groupColumns: { [groupId: string]: Column[] } = {};
   selectedGroupId: string;
 
-  constructor(private store: Store) {}
+  constructor(
+    private store: Store,
+    private readonly msgService: MessageService,
+    private readonly sharedMsgService: SharedMessageService
+  ) {}
 
   ngOnInit() {
+    this.listenMessage();
     combineLatest([this.groups$, this.columns$, this.tasks$])
-      // .pipe(takeWhile((e) => !e.every((v) => !!v), true))
+      .pipe(takeWhile((e) => !e.every((v) => !!v), true))
       .subscribe(([groups, columns, tasks]) => {
         console.log('Initing data');
         this.groups = groups;
@@ -70,8 +80,19 @@ export class MainComponent implements OnInit {
 
   ngOnDestroy() {
     this.destroy$.next();
-    clearInterval(this.addTaskInt);
-    clearInterval(this.removeTaskInt);
+    this.clearEvents();
+  }
+
+  listenMessage() {
+    this.msgService.getMessage().subscribe((message) => {
+      if (message.type === 'TaskAdded') {
+        this.handleTaskAddition((message.data as TaskAddData).task.id);
+      } else if (message.type === 'ColumnAdded') {
+        this.handleColumnAddition((message.data as ColumnAddData).column.id);
+      } else {
+        // Do nothing
+      }
+    });
   }
 
   addTask() {
@@ -82,7 +103,28 @@ export class MainComponent implements OnInit {
     this.store.dispatch(new AddColumn(this.selectedGroupId));
   }
 
+  handleTaskAddition(taskId: string) {
+    this.tasks$.pipe(take(1)).subscribe((tasks) => {
+      const task = tasks.find((t) => t.id === taskId);
+      this.sharedMsgService.sendMessage({
+        type: 'Task_Added',
+        data: { groupId: task.groupId, task } as Task_AddData,
+      });
+    });
+  }
+
+  handleColumnAddition(columnId: string) {
+    this.columns$.pipe(take(1)).subscribe((columns) => {
+      const column = columns.find((t) => t.id === columnId);
+      this.sharedMsgService.sendMessage({
+        type: 'Column_Added',
+        data: { groupId: column.groupId, column } as Column_AddData,
+      });
+    });
+  }
+
   autoEvents() {
+    this.clearEvents();
     this.addTaskInt = setInterval(() => {
       this.store.dispatch(new AddTask(this.groups[0].id));
     }, 5000);
@@ -93,5 +135,14 @@ export class MainComponent implements OnInit {
         )
       );
     }, 6000);
+  }
+
+  clearEvents() {
+    if (this.addTaskInt) {
+      clearInterval(this.addTaskInt);
+    }
+    if (this.addColumnInt) {
+      clearInterval(this.addColumnInt);
+    }
   }
 }

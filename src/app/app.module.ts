@@ -11,25 +11,22 @@ import { ListComponent } from './list/list.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BoardState } from './core/state/board.state';
 import { MainComponent } from './main/main.component';
+import { SharedMessageService } from './services';
+import { MessageService } from './core';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    ListComponent,
-    MainComponent,
-  ],
+  declarations: [AppComponent, ListComponent, MainComponent],
   imports: [
     AppRoutingModule,
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-
     NgxsModule.forRoot([BoardState]),
     NgxsReduxDevtoolsPluginModule.forRoot(),
     NgxsFormPluginModule.forRoot(),
     NgxsResetPluginModule.forRoot(),
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [MessageService, SharedMessageService],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

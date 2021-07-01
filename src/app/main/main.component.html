@@ -11,7 +11,7 @@
     <button (click)="addColumn()">Add Column</button>
   </div>
   <div *ngFor="let group of groups">
-    <app-list [tasks]="groupTasks[group.id]" [columns]="groupColumns[group.id]"></app-list>
+    <app-list [group]="group" [columns]="groupColumns[group.id]" [tasks]="groupTasks[group.id]"></app-list>
     <div style="height: 20px;"></div>
   </div>
 </div>

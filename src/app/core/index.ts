@@ -1,2 +1,2 @@
-export * from './notif';
+export * from './message';
 export * from './state';

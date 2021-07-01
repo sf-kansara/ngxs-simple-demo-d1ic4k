@@ -1,7 +1,7 @@
 <section>
   <table>
     <tr>
-      <th>Task</th>
+      <th>{{ 'Task ' + taskCount }}</th>
       <th *ngFor="let column of columns">{{ column.name }}</th>
     </tr>
     <tr *ngFor="let task of tasks">
