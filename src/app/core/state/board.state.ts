@@ -156,7 +156,7 @@ export class BoardState implements NgxsOnInit {
 
     const sTasks = [...state.tasks];
     sTasks.splice(index, 1);
-    patchState({ tasks: sTasks, taskCounter: state.taskCounter - 1 });
+    patchState({ tasks: sTasks });
   }
 
   @Action(RemoveColumn)
@@ -177,7 +177,6 @@ export class BoardState implements NgxsOnInit {
     patchState({
       columns: sCols,
       tasks: sTasks,
-      colCounter: state.colCounter - 1,
     });
   }
 
