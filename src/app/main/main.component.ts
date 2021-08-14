@@ -124,14 +124,14 @@ export class MainComponent implements OnInit {
   }
 
   autoEvents() {
-    this.clearEvents();
-    this.addTaskInt = setInterval(() => {
-      this.store.dispatch(new AddTask(this.groups[0].id));
+    // this.clearEvents();
+    this.addTaskInt = setTimeout(() => {
+      this.store.dispatch(new AddTask(this.selectedGroupId));
     }, 5000);
-    this.removeTaskInt = setInterval(() => {
+    this.removeTaskInt = setTimeout(() => {
       this.store.dispatch(
         new RemoveTask(
-          this.tasks.find((t) => t.groupId === this.groups[0].id).id
+          this.tasks.find((t) => t.groupId === this.selectedGroupId).id
         )
       );
     }, 6000);

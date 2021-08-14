@@ -210,7 +210,6 @@ export class BoardState implements NgxsOnInit {
       columns: sCols,
       tasks: sTasks,
     });
-
     this.msgService.sendMessage({
       type: 'ColumnAdded',
       data: { column },
